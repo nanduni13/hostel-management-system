@@ -1,26 +1,44 @@
 import Student from "../models/studentModel.js";
 
+// Create Student
 export const createStudent = async (req, res) => {
   try {
     const student = new Student(req.body);
     await student.save();
     res.status(201).json(student);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-export const getStudents = async (req, res) => {
-  const students = await Student.find().populate("roomId");
-  res.json(students);
+// Fetch Students
+export const fetchStudents = async (req, res) => {
+  try {
+    const students = await Student.find().populate("roomId");
+    res.json(students);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
+// Update Student
 export const updateStudent = async (req, res) => {
-  const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(student);
+  try {
+    const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!student) return res.status(404).json({ message: "Student not found" });
+    res.json(student);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
+// Delete Student
 export const deleteStudent = async (req, res) => {
-  await Student.findByIdAndDelete(req.params.id);
-  res.json({ message: "Student deleted" });
+  try {
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) return res.status(404).json({ message: "Student not found" });
+    res.json({ message: "Student deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
