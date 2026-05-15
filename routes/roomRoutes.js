@@ -1,12 +1,14 @@
 import express from "express";
 import { createRoom, fetchRooms, updateRoom, deleteRoom } from "../controllers/roomController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// CRUD Endpoints
-router.post("/", createRoom);             // Create room
-router.get("/", fetchRooms);              // Get all rooms
-router.put("/:id", updateRoom);           // Update room by ID
-router.delete("/:id", deleteRoom);        // Delete room by ID
+router.use(authMiddleware);
+
+router.post("/", createRoom);
+router.get("/", fetchRooms);
+router.put("/:id", updateRoom);
+router.delete("/:id", deleteRoom);
 
 export default router;

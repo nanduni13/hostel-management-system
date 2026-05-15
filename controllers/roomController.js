@@ -1,30 +1,27 @@
 import Room from "../models/roomModel.js";
 
-// Create Room
+
 export const createRoom = async (req, res) => {
   try {
     const room = new Room(req.body);
     await room.save();
     res.status(201).json(room);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json({ error: error.message });
   }
 };
 
-// Fetch All Rooms
+
 export const fetchRooms = async (req, res) => {
   try {
     const rooms = await Room.find().populate("occupants");
-    if (rooms.length === 0) {
-      return res.status(404).json({ message: "No rooms found" });
-    }
     res.status(200).json(rooms);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Update Room
+
 export const updateRoom = async (req, res) => {
   try {
     const room = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -33,11 +30,11 @@ export const updateRoom = async (req, res) => {
     }
     res.status(200).json(room);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json({ error: error.message });
   }
 };
 
-// Delete Room
+
 export const deleteRoom = async (req, res) => {
   try {
     const room = await Room.findByIdAndDelete(req.params.id);
@@ -46,6 +43,6 @@ export const deleteRoom = async (req, res) => {
     }
     res.status(200).json({ message: "Room deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
 };
