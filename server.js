@@ -10,6 +10,17 @@ import complaintRoutes from "./routes/complaintRoutes.js";
 import noticeRoutes from "./routes/noticeRoutes.js";
 
 dotenv.config();
+
+if (!process.env.JWT_SECRET?.trim()) {
+  console.error("❌ JWT_SECRET is missing in .env — login tokens will not work.");
+  console.error("   Add: JWT_SECRET=your_secret_key_here");
+  process.exit(1);
+}
+if (!process.env.MONGO_URI?.trim()) {
+  console.error("❌ MONGO_URI is missing in .env");
+  process.exit(1);
+}
+
 const app = express();
 
 app.use((req, res, next) => {

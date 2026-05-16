@@ -1,0 +1,453 @@
+{
+  "info": {
+    "name": "Hostel Management System",
+    "description": "API collection for University of Vavuniya Hostel MS.\n\nSetup:\n1. Start MongoDB and run `npm run dev` (port 5000)\n2. Run `npm run seed:admin` once\n3. Run **Admin Login** → token saves to `adminToken`\n4. Use admin requests to add rooms, students, notices\n5. Run **Student Register/Login** → token saves to `studentToken`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "adminToken", "value": "" },
+    { "key": "studentToken", "value": "" },
+    { "key": "roomId", "value": "" },
+    { "key": "studentId", "value": "" },
+    { "key": "noticeId", "value": "" },
+    { "key": "complaintId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Auth (no token)",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('adminToken', json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Get Public Rooms (signup)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/rooms"
+          }
+        },
+        {
+          "name": "Student Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('studentToken', json.token);",
+                  "  if (json.student?.id) pm.collectionVariables.set('studentId', json.student.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kamal Perera\",\n  \"username\": \"kamal01\",\n  \"email\": \"kamal@uov.ac.lk\",\n  \"password\": \"student123\",\n  \"age\": 21,\n  \"department\": \"Computer Science\",\n  \"roomId\": \"{{roomId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/student/register"
+          }
+        },
+        {
+          "name": "Student Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('studentToken', json.token);",
+                  "  if (json.student?.id) pm.collectionVariables.set('studentId', json.student.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"kamal01\",\n  \"password\": \"student123\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/student/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Admin — Rooms",
+      "item": [
+        {
+          "name": "Create Room",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('roomId', pm.response.json()._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"A-101\",\n  \"capacity\": 4\n}"
+            },
+            "url": "{{baseUrl}}/api/rooms"
+          }
+        },
+        {
+          "name": "Get All Rooms",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/rooms"
+          }
+        },
+        {
+          "name": "Update Room",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"A-101\",\n  \"capacity\": 6\n}"
+            },
+            "url": "{{baseUrl}}/api/rooms/{{roomId}}"
+          }
+        },
+        {
+          "name": "Delete Room",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/rooms/{{roomId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Admin — Students",
+      "item": [
+        {
+          "name": "Create Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('studentId', pm.response.json()._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nimal Silva\",\n  \"username\": \"nimal02\",\n  \"email\": \"nimal@uov.ac.lk\",\n  \"age\": 22,\n  \"department\": \"IT\",\n  \"feesPaid\": true,\n  \"roomId\": \"{{roomId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/students"
+          }
+        },
+        {
+          "name": "Get All Students",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/students"
+          }
+        },
+        {
+          "name": "Get Student By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Update Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nimal Silva\",\n  \"age\": 23,\n  \"department\": \"Information Technology\",\n  \"feesPaid\": true,\n  \"roomId\": \"{{roomId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "Delete Student",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/students/{{studentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Admin — Notices",
+      "item": [
+        {
+          "name": "Create Notice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('noticeId', pm.response.json()._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Water shutdown\",\n  \"message\": \"Water will be off tomorrow 9 AM – 11 AM on Block A.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/notices"
+          }
+        },
+        {
+          "name": "Get All Notices",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/notices"
+          }
+        },
+        {
+          "name": "Update Notice",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Water shutdown (updated)\",\n  \"message\": \"Rescheduled to 10 AM – 12 PM.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/notices/{{noticeId}}"
+          }
+        },
+        {
+          "name": "Delete Notice",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/notices/{{noticeId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Admin — Complaints",
+      "item": [
+        {
+          "name": "Get All Complaints",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const list = pm.response.json();",
+                  "  if (list.length) pm.collectionVariables.set('complaintId', list[0]._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/complaints"
+          }
+        },
+        {
+          "name": "Update Complaint (reply)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"adminReply\": \"Maintenance team will visit today.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}"
+          }
+        },
+        {
+          "name": "Delete Complaint",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/complaints/{{complaintId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Admin — Admins",
+      "item": [
+        {
+          "name": "Create Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"staff01\",\n  \"password\": \"staff12345\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admins"
+          }
+        },
+        {
+          "name": "Get All Admins",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/admins"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Student portal (student token)",
+      "item": [
+        {
+          "name": "My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/api/student/profile"
+          }
+        },
+        {
+          "name": "My Room",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/api/student/room"
+          }
+        },
+        {
+          "name": "Get Notices",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/api/student/notices"
+          }
+        },
+        {
+          "name": "Create Complaint",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('complaintId', pm.response.json()._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Leaking tap\",\n  \"message\": \"Bathroom tap in room A-101 is leaking.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/student/complaints"
+          }
+        },
+        {
+          "name": "My Complaints",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/api/student/complaints"
+          }
+        }
+      ]
+    }
+  ]
+}
