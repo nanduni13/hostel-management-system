@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
 
   if (!adminLoading && !studentLoading) {
-    if (isAdmin) return <Navigate to="/" replace />;
+    if (isAdmin) return <Navigate to="/manage" replace />;
     if (isStudent) return <Navigate to="/student" replace />;
   }
 
@@ -29,7 +29,7 @@ export default function LoginPage() {
     try {
       if (tab === 'admin') {
         await adminLogin(username.trim(), password);
-        navigate('/', { replace: true });
+        navigate('/manage', { replace: true });
       } else {
         await studentLogin(username.trim(), password);
         navigate('/student', { replace: true });
@@ -42,10 +42,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="login-page">
-      <div className="login-card">
+    <div className="login-page auth-page">
+      <div className="auth-backdrop" aria-hidden />
+      <div className="login-shell">
+        <Link to="/" className="auth-back-link muted">
+          ← Back to welcome
+        </Link>
+        <div className="login-card login-card-accent">
+        <div className={`login-role-bar ${tab === 'admin' ? 'role-admin' : 'role-student'}`} aria-hidden />
         <div className="login-brand">
-          <span className="brand-icon">H</span>
+          <span className={`brand-icon ${tab === 'admin' ? 'brand-icon-warm' : ''}`}>H</span>
           <div>
             <h1>Hostel MS</h1>
             <p>{tab === 'admin' ? 'Admin login' : 'Student login'}</p>
@@ -109,6 +115,7 @@ export default function LoginPage() {
             Default admin: <code>admin</code> / <code>admin123</code>
           </p>
         )}
+        </div>
       </div>
     </div>
   );

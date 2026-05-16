@@ -2,12 +2,12 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { to: '/', label: 'Dashboard', end: true },
-  { to: '/students', label: 'Students' },
-  { to: '/rooms', label: 'Rooms' },
-  { to: '/notices', label: 'Notices' },
-  { to: '/complaints', label: 'Complaints' },
-  { to: '/admins', label: 'Admins' },
+  { to: '/manage', label: 'Dashboard', end: true },
+  { to: '/manage/students', label: 'Students' },
+  { to: '/manage/rooms', label: 'Rooms' },
+  { to: '/manage/notices', label: 'Notices' },
+  { to: '/manage/complaints', label: 'Complaints' },
+  { to: '/manage/admins', label: 'Admins' },
 ];
 
 export default function Layout() {
@@ -16,11 +16,11 @@ export default function Layout() {
 
   function handleLogout() {
     logout();
-    navigate('/login', { replace: true });
+    navigate('/', { replace: true });
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell app-shell-admin">
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-icon">H</span>

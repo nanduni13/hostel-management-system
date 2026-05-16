@@ -29,9 +29,9 @@ export default function Dashboard() {
   }, []);
 
   const cards = [
-    { label: 'Students', value: stats.students, to: '/students', color: 'card-blue' },
-    { label: 'Rooms', value: stats.rooms, to: '/rooms', color: 'card-green' },
-    { label: 'Admins', value: stats.admins, to: '/admins', color: 'card-purple' },
+    { label: 'Students', value: stats.students, to: '/manage/students', color: 'card-blue' },
+    { label: 'Rooms', value: stats.rooms, to: '/manage/rooms', color: 'card-green' },
+    { label: 'Admins', value: stats.admins, to: '/manage/admins', color: 'card-purple' },
   ];
 
   return (

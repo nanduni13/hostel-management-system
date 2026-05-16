@@ -6,8 +6,9 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="login-page">
-        <p className="muted">Loading...</p>
+      <div className="login-page auth-page auth-page-loading">
+        <div className="auth-backdrop" aria-hidden />
+        <p className="muted loading-pulse">Loading…</p>
       </div>
     );
   }

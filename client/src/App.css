@@ -22,13 +22,15 @@
 .brand-icon {
   width: 42px;
   height: 42px;
-  background: linear-gradient(135deg, var(--primary), #6366f1);
+  background: linear-gradient(145deg, var(--primary) 0%, #0f766e 45%, #155e75 100%);
+  color: #ecfeff;
   border-radius: var(--radius);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 1.25rem;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
 }
 
 .brand h1 {
@@ -588,4 +590,259 @@ th {
 .modal {
   max-width: 480px;
   width: 100%;
+}
+
+/* ----- Welcome landing ----- */
+.welcome-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: clamp(1rem, 4vw, 2rem);
+  overflow-x: hidden;
+}
+
+.welcome-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: var(--bg);
+}
+
+.welcome-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--welcome-glow);
+  opacity: 1;
+  pointer-events: none;
+}
+
+.welcome-grid-lines {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.035;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--text) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--text) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.welcome-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.welcome-greeting {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--primary-hover);
+  margin-bottom: 1.35rem;
+}
+
+.welcome-title {
+  font-size: clamp(1.5rem, 4.4vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.85rem;
+}
+
+.welcome-university {
+  font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.welcome-actions {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.welcome-btn {
+  flex: 1 1 10rem;
+  max-width: 14rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-page {
+  position: relative;
+}
+
+.auth-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+.auth-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--welcome-glow);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.login-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.signup-card.login-card-wide {
+  max-width: 520px;
+}
+
+.auth-back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+  transition: color 0.15s ease;
+}
+
+.auth-back-link:hover {
+  color: var(--primary-hover) !important;
+}
+
+.login-card {
+  position: relative;
+  backdrop-filter: blur(16px);
+  background: rgba(18, 26, 36, 0.92) !important;
+  border: 1px solid rgba(49, 61, 79, 0.95) !important;
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+}
+
+.login-card-accent {
+  padding-top: 2.85rem;
+}
+
+.login-role-bar {
+  position: absolute;
+  top: 0;
+  left: 1.35rem;
+  right: 1.35rem;
+  height: 4px;
+  border-radius: 0 0 8px 8px;
+}
+
+.role-student {
+  background: linear-gradient(90deg, var(--primary), #6366f1);
+}
+
+.role-admin {
+  background: linear-gradient(90deg, var(--accent-warm), #ea580c);
+}
+
+.brand-icon-warm {
+  background: linear-gradient(145deg, #fbbf24, #ea580c) !important;
+  color: #1c1917 !important;
+  box-shadow: 0 6px 22px rgba(234, 88, 12, 0.42) !important;
+}
+
+.auth-page-loading {
+  gap: 1rem;
+}
+
+.loading-pulse {
+  position: relative;
+  z-index: 1;
+  animation: welcome-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes welcome-pulse {
+  0%, 100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.btn-lg {
+  padding: 0.78rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-outline {
+  background: transparent !important;
+  border: 2px solid rgba(13, 148, 136, 0.48) !important;
+  color: var(--primary-hover) !important;
+}
+
+.btn-outline:hover {
+  background: var(--primary-muted) !important;
+  border-color: var(--primary-hover) !important;
+  color: var(--text) !important;
+}
+
+.btn-warm {
+  background: linear-gradient(145deg, #fbbf24, #d97706) !important;
+  color: #1c1917 !important;
+  border: none !important;
+  box-shadow: 0 8px 26px rgba(217, 119, 6, 0.38);
+}
+
+.btn-warm:hover {
+  filter: brightness(1.08);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 26, 36, 0.65) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-muted) !important;
+  padding: 0.55rem 1.1rem !important;
+  border-radius: 11px;
+  font-weight: 500;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(13, 148, 136, 0.45) !important;
+  color: var(--text) !important;
+  background: var(--primary-muted) !important;
+}
+
+/* ----- Post-login shell accents ----- */
+.app-shell-admin .main-content {
+  background:
+    radial-gradient(ellipse 85% 55% at 50% 0%, rgba(13, 148, 136, 0.07), transparent 52%),
+    radial-gradient(ellipse 55% 45% at 95% 15%, rgba(245, 158, 11, 0.05), transparent 46%);
+}
+
+.app-shell-student .main-content {
+  background:
+    radial-gradient(ellipse 85% 55% at 50% 0%, rgba(99, 102, 241, 0.065), transparent 52%),
+    radial-gradient(ellipse 50% 45% at 15% 25%, rgba(13, 148, 136, 0.06), transparent 42%);
+}
+
+.app-shell-student .sidebar {
+  border-right-color: rgba(99, 102, 241, 0.14);
 }

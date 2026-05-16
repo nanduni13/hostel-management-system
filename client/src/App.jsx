@@ -17,6 +17,7 @@ import RoomsPage from './pages/RoomsPage';
 import AdminsPage from './pages/AdminsPage';
 import NoticesPage from './pages/NoticesPage';
 import ComplaintsPage from './pages/ComplaintsPage';
+import WelcomePage from './pages/WelcomePage';
 import './App.css';
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
       <StudentAuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<WelcomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<StudentSignupPage />} />
             <Route
@@ -41,7 +43,7 @@ export default function App() {
               <Route path="complaints" element={<StudentComplaintsPage />} />
             </Route>
             <Route
-              path="/"
+              path="/manage"
               element={
                 <ProtectedRoute>
                   <Layout />
@@ -55,7 +57,13 @@ export default function App() {
               <Route path="complaints" element={<ComplaintsPage />} />
               <Route path="admins" element={<AdminsPage />} />
             </Route>
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            {/* Legacy admin paths → /manage/* */}
+            <Route path="/students" element={<Navigate to="/manage/students" replace />} />
+            <Route path="/rooms" element={<Navigate to="/manage/rooms" replace />} />
+            <Route path="/notices" element={<Navigate to="/manage/notices" replace />} />
+            <Route path="/complaints" element={<Navigate to="/manage/complaints" replace />} />
+            <Route path="/admins" element={<Navigate to="/manage/admins" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </StudentAuthProvider>

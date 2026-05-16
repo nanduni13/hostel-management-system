@@ -14,11 +14,11 @@ export default function StudentLayout() {
 
   function handleLogout() {
     logout();
-    navigate('/login?tab=student', { replace: true });
+    navigate('/', { replace: true });
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell app-shell-student">
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-icon">H</span>

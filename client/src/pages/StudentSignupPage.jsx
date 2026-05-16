@@ -67,15 +67,21 @@ export default function StudentSignupPage() {
   }
 
   return (
-    <div className="login-page">
-      <div className="login-card login-card-wide">
-        <div className="login-brand">
-          <span className="brand-icon">H</span>
-          <div>
-            <h1>Student Sign Up</h1>
-            <p>Create your hostel account</p>
+    <div className="login-page auth-page">
+      <div className="auth-backdrop" aria-hidden />
+      <div className="login-shell">
+        <Link to="/" className="auth-back-link muted">
+          ← Back to welcome
+        </Link>
+        <div className="login-card login-card-wide signup-card login-card-accent">
+          <div className="login-role-bar role-student" aria-hidden />
+          <div className="login-brand">
+            <span className="brand-icon">H</span>
+            <div>
+              <h1>Student Sign Up</h1>
+              <p>Create your hostel account</p>
+            </div>
           </div>
-        </div>
 
         {error && <div className="alert alert-error">{error}</div>}
         {message && <div className="alert alert-success">{message}</div>}
@@ -169,9 +175,10 @@ export default function StudentSignupPage() {
           </button>
         </form>
 
-        <p className="auth-switch">
-          Already have an account? <Link to="/login?tab=student">Login here</Link>
-        </p>
+          <p className="auth-switch">
+            Already have an account? <Link to="/login?tab=student">Login here</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
