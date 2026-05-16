@@ -5,12 +5,14 @@ import { getToken, setAuth, clearAuth, getSavedAdmin } from '../utils/authStorag
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [admin, setAdmin] = useState(getSavedAdmin);
+  const [admin, setAdmin] = useState(() => (getToken() ? getSavedAdmin() : null));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = getToken();
     if (!token) {
+      clearAuth();
+      setAdmin(null);
       setLoading(false);
       return;
     }
@@ -39,8 +41,10 @@ export function AuthProvider({ children }) {
     setAdmin(null);
   }
 
+  const isAuthenticated = !!getToken() && !!admin;
+
   return (
-    <AuthContext.Provider value={{ admin, loading, login, logout, isAuthenticated: !!admin }}>
+    <AuthContext.Provider value={{ admin, loading, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

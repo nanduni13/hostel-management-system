@@ -5,12 +5,14 @@ import { getStudentToken, setStudentAuth, clearStudentAuth, getSavedStudent } fr
 const StudentAuthContext = createContext(null);
 
 export function StudentAuthProvider({ children }) {
-  const [student, setStudent] = useState(getSavedStudent);
+  const [student, setStudent] = useState(() => (getStudentToken() ? getSavedStudent() : null));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = getStudentToken();
     if (!token) {
+      clearStudentAuth();
+      setStudent(null);
       setLoading(false);
       return;
     }
@@ -46,9 +48,11 @@ export function StudentAuthProvider({ children }) {
     setStudent(null);
   }
 
+  const isAuthenticated = !!getStudentToken() && !!student;
+
   return (
     <StudentAuthContext.Provider
-      value={{ student, loading, login, register, logout, isAuthenticated: !!student }}
+      value={{ student, loading, login, register, logout, isAuthenticated }}
     >
       {children}
     </StudentAuthContext.Provider>

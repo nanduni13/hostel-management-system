@@ -2,11 +2,16 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { studentsApi, roomsApi, adminsApi } from '../api/api';
 
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 async function safeCount(fetcher) {
   try {
     const data = await fetcher();
     return Array.isArray(data) ? data.length : 0;
-  } catch {
+  } catch (err) {
+    if (err.message?.includes('login required') || err.message?.includes('Session expired')) {
+      throw err;
+    }
     return 0;
   }
 }
@@ -14,16 +19,32 @@ async function safeCount(fetcher) {
 export default function Dashboard() {
   const [stats, setStats] = useState({ students: 0, rooms: 0, admins: 0 });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [dbName, setDbName] = useState('');
+
+  useEffect(() => {
+    fetch(`${API_BASE}/health`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.database) setDbName(data.database);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     async function load() {
-      const [students, rooms, admins] = await Promise.all([
-        safeCount(studentsApi.getAll),
-        safeCount(roomsApi.getAll),
-        safeCount(adminsApi.getAll),
-      ]);
-      setStats({ students, rooms, admins });
-      setLoading(false);
+      try {
+        const [students, rooms, admins] = await Promise.all([
+          safeCount(studentsApi.getAll),
+          safeCount(roomsApi.getAll),
+          safeCount(adminsApi.getAll),
+        ]);
+        setStats({ students, rooms, admins });
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
@@ -39,7 +60,14 @@ export default function Dashboard() {
       <header className="page-header">
         <h2>Dashboard</h2>
         <p>Overview of your hostel management data</p>
+        {dbName && (
+          <p className="muted" style={{ marginTop: '0.35rem', fontSize: '0.85rem' }}>
+            MongoDB database: <strong>{dbName}</strong> — open this name in Compass
+          </p>
+        )}
       </header>
+
+      {error && <div className="alert alert-error">{error}</div>}
 
       <div className="stats-grid">
         {cards.map(({ label, value, to, color }) => (

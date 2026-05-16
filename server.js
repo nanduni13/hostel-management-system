@@ -33,10 +33,22 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log(" MongoDB Connected"))
-  .catch(err => console.error(" DB Error:", err));
+app.use((req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      error: "Database not connected. Start MongoDB and check MONGO_URI in .env",
+    });
+  }
+  next();
+});
 
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    database: mongoose.connection.name,
+    mongoUri: process.env.MONGO_URI,
+  });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/student", studentPortalRoutes);
@@ -47,4 +59,18 @@ app.use("/api/complaints", complaintRoutes);
 app.use("/api/notices", noticeRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    const dbName = mongoose.connection.name;
+    console.log(`✅ MongoDB connected — database: "${dbName}"`);
+    console.log(`   (Open this exact database in MongoDB Compass)`);
+    app.listen(PORT, () => {
+      console.log(`✅ API running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err.message);
+    process.exit(1);
+  });
